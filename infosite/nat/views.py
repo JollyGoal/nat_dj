@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView
-from .models import Gallery, Personal, Post, Acreditation, Files
+from .models import Gallery, Personal, Post, Acreditation, Files, Text
 from .serializers import (
     PostListSerializer,
     GallerySerializer,
@@ -9,6 +9,7 @@ from .serializers import (
     FileListSerializer,
     PostDetailSerializer,
     ContactCreateSerializer,
+    TextSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -24,7 +25,6 @@ class AcreditationView(LoginRequiredMixin, generics.CreateAPIView):
 class ContactView(LoginRequiredMixin, generics.CreateAPIView):
     """КОНТАКТ С НАМИ"""
     serializer_class = ContactCreateSerializer
-
 
 class LargeResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -46,12 +46,17 @@ class PostDetailView(APIView):
     def get(self, request, pk):
         post = Post.objects.get(id=pk, draft=False)
         serializer = PostDetailSerializer(post)
+        file = Files.objects.filter(documents__id=pk)
+        files = FileListSerializer(file, many=True)
+        text = Text.objects.filter(add__id=pk)
+        texts = TextSerializer(text, many=True)
         post_shots = Gallery.objects.filter(gallery__id=pk)
         ser_shots = GallerySerializer(post_shots, many=True)
         pers_shots = Personal.objects.filter(personal__id=pk)
         sen_shots = PersonalListSerializer(pers_shots, many=True)
         return Response({'post': serializer.data, 'gallery': ser_shots.data,
-                         'personal': sen_shots.data})
+                         'personal': sen_shots.data, 'texts': texts.data,
+                         'files': files.data})
 
     def post(self, request, pk):
         news = Post.objects.get(id=pk, draft=False)
@@ -76,14 +81,20 @@ class PersonsListView(generics.ListAPIView):
 
 
 class GalleryView(generics.ListAPIView):
-    """ВЫВОД СПИСКА ПЕРСОН"""
+    """ВЫВОД СПИСКА ГАЛЛЕРЕИ"""
     queryset = Gallery.objects.all()
     serializer_class = GallerySerializer
     pagination_class = LargeResultsSetPagination
 
 
 class FilesListView(generics.ListAPIView):
-    """ВЫВОД СПИСКА ПЕРСОН"""
+    """ВЫВОД СПИСКА ФАЙЛОВ"""
     queryset = Files.objects.all()
     serializer_class = FileListSerializer
     pagination_class = LargeResultsSetPagination
+
+# class TextView(generics.ListAPIView):
+#     """ВЫВОД СПИСКА ТЕМ"""
+#     queryset = Text.objects.all()
+#     serializer_class = TextSerializer
+#     pagination_class = LargeResultsSetPagination

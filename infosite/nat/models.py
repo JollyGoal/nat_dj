@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -16,12 +15,11 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    """НОВОСТИ"""
+    """НОВОСТИ И МЕРОПРИЯТИЯ"""
     title = models.CharField("Оглавление", max_length=150)
     description = models.TextField("Описание")
     image = models.ImageField("Главная Картинка", upload_to="images/")
     date = models.DateTimeField("Дата")
-    shots = models.ImageField("Картинки", upload_to="shots/")
     category = models.ForeignKey(Category, verbose_name="Категория",
                                  on_delete=models.SET_NULL, null=True)
 
@@ -41,13 +39,14 @@ class Post(models.Model):
         verbose_name_plural = "Новости и Мероприятия"
 
 class Files(models.Model):
-    name = models.CharField("Название Файла", max_length=150)
+    title = models.CharField("Оглавление", max_length=150)
+    description = models.TextField("Описание файла", blank=True, null=True)
     file = models.FileField("Документы (PDF, WORD...)", upload_to="files/")
     documents = models.ForeignKey(Post, verbose_name="Документы к",
                                  on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.title)
 
     class Meta:
         verbose_name = "Файл"
@@ -65,6 +64,19 @@ class Gallery(models.Model):
         verbose_name = "Галлерея"
         verbose_name_plural = "Галлерея"
 
+class Text(models.Model):
+    title = models.CharField("Оглавление", max_length=150)
+    description = models.TextField("Описание")
+    add = models.ForeignKey(Post, verbose_name="Дополнительная информация",
+                              on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.title)
+
+    class Meta:
+        verbose_name = "Дополнительный текст"
+        verbose_name_plural = "Дополнительный текст"
+
 
 class Personal(models.Model):
     """ПЕРСОНАЛ"""
@@ -72,6 +84,8 @@ class Personal(models.Model):
     image = models.ImageField("Изображение", upload_to="people/")
     personal = models.ForeignKey(Post, verbose_name="Персонал",
                                  on_delete=models.CASCADE, blank=True, null=True)
+    perscat = models.ForeignKey(Category, verbose_name="",
+                              on_delete=models.CASCADE, blank=True, null=True)
 
 
     def __str__(self):
@@ -82,6 +96,7 @@ class Personal(models.Model):
         verbose_name_plural = "Персонал"
 
 class Acreditation(models.Model):
+
     title = models.CharField("Название СМИ", max_length=150)
     format = models.CharField("Формат выхода материала", max_length=150)
     name = models.CharField("Ф.И.О.", max_length=150)
@@ -101,6 +116,7 @@ class Acreditation(models.Model):
 
 
 class Contact(models.Model):
+
     title = models.CharField("Наименование организации", max_length=150)
     face = models.CharField("Контактное лицо", max_length=150)
     phone = models.PositiveSmallIntegerField("Телефон", blank=True, null=True, help_text="+998")
