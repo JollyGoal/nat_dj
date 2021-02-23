@@ -8,11 +8,10 @@ from .serializers import (
     AcreditationCreateSerializer,
     FileListSerializer,
     PostDetailSerializer,
-
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, filters
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -33,6 +32,8 @@ class PostListView(ListAPIView):
     queryset = Post.objects.filter(draft=False)
     serializer_class = PostListSerializer
     pagination_class = LargeResultsSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description', 'category__name']
 
 
 class PostDetailView(APIView):
@@ -59,13 +60,7 @@ class PostDetailView(APIView):
 class PostCreateView(LoginRequiredMixin, generics.CreateAPIView):
     """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
     serializer_class = CreatePostSerializer
-    # permission_classes = [permissions.IsAdminUser]
-
-
-class PostDeleteView(generics.DestroyAPIView):
-    """УДАЛЕНИЕ ОТЗЫВА"""
-    queryset = Post.objects.all()
-    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
 
 
 class PersonsListView(generics.ListAPIView):
