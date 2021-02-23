@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Acreditation
+from .models import Post, Acreditation, Contact
 
 
 class PostForm(forms.ModelForm):
@@ -9,7 +9,13 @@ class PostForm(forms.ModelForm):
         exclude = 'draft',
 
 class AcreditationForm(forms.ModelForm):
-    """ФОРМА НОВОСТЕЙ"""
+    """ФОРМА АККРЕДИТАЦИИ"""
     class Meta:
         model = Acreditation
-        exclude = 'draft',
+        fields = '__all__'
+
+class ContactForm(forms.ModelForm):
+    """ФОРМА КОНТАКТОВ"""
+    class Meta:
+        model = Contact
+        exclude = 'date'

@@ -100,3 +100,19 @@ class Acreditation(models.Model):
         verbose_name_plural = "Аккредитации"
 
 
+class Contact(models.Model):
+    title = models.CharField("Наименование организации", max_length=150)
+    face = models.CharField("Контактное лицо", max_length=150)
+    phone = models.PositiveSmallIntegerField("Телефон", blank=True, null=True, help_text="+998")
+    date = models.DateTimeField("Дата выхода материала", auto_now_add=True)
+    email = models.EmailField("E-mail")
+    message = models.TextField("Сообщение")
+    files = models.FileField("Файлы", upload_to="contact/", null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.title} - {self.face}"
+
+    class Meta:
+        verbose_name = "Связь с нами"
+        verbose_name_plural = "Связь с нами"
+

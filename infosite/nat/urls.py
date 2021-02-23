@@ -9,4 +9,5 @@ urlpatterns = [
     path("acredite/", views.AcreditationView.as_view()),
     path("gallery/", views.GalleryView.as_view()),
     path("files/", views.FilesListView.as_view()),
+    path("contact/", views.ContactView.as_view()),
 ]

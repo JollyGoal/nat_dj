@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Post, Acreditation, Personal, Gallery, Category, Files
+from .models import Post, Acreditation, Personal, Gallery, Category, Files, Contact
 
 # Admin site display settings
 class AuthorAdmin(admin.ModelAdmin):
@@ -89,6 +89,13 @@ class AcreditationAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
     list_display_links = 'name',
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "date", "email", )
+    readonly_fields = ("email", "date", "title", "files", "message", "phone", "face")
+    list_display_links = 'title',
+    list_filter = ("date",)
 
 
 
