@@ -1,47 +1,34 @@
-from .models import Acreditation, News, Event, Gallery, Personal
+from .models import Acreditation, Post, Gallery, Personal, Files
 from rest_framework import serializers
 
-class NewsListSerializer(serializers.ModelSerializer):
+class PostListSerializer(serializers.ModelSerializer):
     """СПИСОК НОВОСТЕЙ"""
 
     class Meta:
-        model = News
-        fields = ("id", "title", "date", "image", "url")
+        model = Post
+        fields = 'title', 'date', 'category'
 
-class NewsDetailSerializer(serializers.ModelSerializer):
-    """ПОЛНЫЕ ДЕТАЛИ НОВОСТЕЙ"""
+class PostDetailSerializer(serializers.ModelSerializer):
+    """ПОДРОБНОСТИ НОВОСТЕЙ"""
 
     class Meta:
-        model = News
-        exclude = ("draft",)
+        model = Post
+        exclude = 'draft',
 
-class CreateNewsSerializer(serializers.ModelSerializer):
+class FileListSerializer(serializers.ModelSerializer):
+    """ДОБАВЛЕНИЕ Файла"""
+
+    class Meta:
+        model = Files
+        fields = '__all__'
+
+
+class CreatePostSerializer(serializers.ModelSerializer):
     """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
 
     class Meta:
-        model = News
-        exlude = 'url', 'draft'
-
-class EventListSerializer(serializers.ModelSerializer):
-    """СПИСОК МЕРОПРИЯТИЙ"""
-
-    class Meta:
-        model = Event
-        fields = ("id", "title", "date", "image", "url")
-
-class EventDetailSerializer(serializers.ModelSerializer):
-    """ДЕТАЛИ МЕРОПРИЯТИЙ"""
-
-    class Meta:
-        model = Event
-        fields = ("__all__")
-
-class EventCreateSerializer(serializers.ModelSerializer):
-    """ДОБАВЛЕНИЕ МЕРОПРИЯТИЙ"""
-
-    class Meta:
-        model = Event
-        exlude = 'url', 'draft'
+        model = Post
+        exclude = 'draft',
 
 
 class AcreditationCreateSerializer(serializers.ModelSerializer):
@@ -58,13 +45,14 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = 'image'
+        fields = 'image',
+
 
 class PersonalListSerializer(serializers.ModelSerializer):
     """СПИСОК ПЕРСОНАЛА"""
 
     class Meta:
         model = Personal
-        exlude = '__all__'
+        fields = '__all__'
 
 

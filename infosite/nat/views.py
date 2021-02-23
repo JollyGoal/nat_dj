@@ -1,21 +1,21 @@
 from rest_framework.generics import ListAPIView
-from .models import News, Gallery, Personal, Event, Acreditation
+from .models import Gallery, Personal, Post, Acreditation, Files
 from .serializers import (
-    NewsListSerializer,
-    NewsDetailSerializer,
+    PostListSerializer,
     GallerySerializer,
-    CreateNewsSerializer,
+    CreatePostSerializer,
     PersonalListSerializer,
-    EventListSerializer,
-    EventDetailSerializer,
     AcreditationCreateSerializer,
-    EventCreateSerializer,
+    FileListSerializer,
+    PostDetailSerializer,
+
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, generics
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class AcreditationView(LoginRequiredMixin, generics.CreateAPIView):
     """АККРЕДИТАЦИЯ СМИ"""
@@ -28,44 +28,52 @@ class LargeResultsSetPagination(PageNumberPagination):
     max_page_size = 10
 
 
-class NewsListView(ListAPIView):
+class PostListView(ListAPIView):
     """вывод список новостей"""
-    queryset = News.objects.filter(draft=False)
-    serializer_class = NewsListSerializer
+    queryset = Post.objects.filter(draft=False)
+    serializer_class = PostListSerializer
     pagination_class = LargeResultsSetPagination
 
-class NewsDetailView(APIView):
+
+class PostDetailView(APIView):
 
     def get(self, request, pk):
-        news = News.objects.get(id=pk, draft=False)
-        serializer = NewsDetailSerializer(news)
-        news_shots = Gallery.objects.filter(news__id=pk)
-        ser_shots = GallerySerializer(news_shots, many=True)
-        return Response({'news': serializer.data, 'shots': ser_shots.data})
+        post = Post.objects.get(id=pk, draft=False)
+        serializer = PostDetailSerializer(post)
+        post_shots = Gallery.objects.filter(gallery__id=pk)
+        ser_shots = GallerySerializer(post_shots, many=True)
+        pers_shots = Personal.objects.filter(personal__id=pk)
+        sen_shots = PersonalListSerializer(pers_shots, many=True)
+        return Response({'post': serializer.data, 'gallery': ser_shots.data,
+                         'personal': sen_shots.data})
 
     def post(self, request, pk):
-        news = News.objects.get(id=pk, draft=False)
-        serializer = NewsDetailSerializer(news)
+        news = Post.objects.get(id=pk, draft=False)
+        serializer = PostListSerializer(news)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
 
-class NewsCreateView(LoginRequiredMixin, generics.CreateAPIView):
-    """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
-    serializer_class = CreateNewsSerializer
-    permission_classes = [permissions.IsAdminUser]
 
-class NewsDeleteView(generics.DestroyAPIView):
+class PostCreateView(LoginRequiredMixin, generics.CreateAPIView):
+    """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
+    serializer_class = CreatePostSerializer
+    # permission_classes = [permissions.IsAdminUser]
+
+
+class PostDeleteView(generics.DestroyAPIView):
     """УДАЛЕНИЕ ОТЗЫВА"""
-    queryset = News.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    queryset = Post.objects.all()
+    # permission_classes = [permissions.IsAdminUser]
+
 
 class PersonsListView(generics.ListAPIView):
     """ВЫВОД СПИСКА ПЕРСОН"""
     queryset = Personal.objects.all()
     serializer_class = PersonalListSerializer
     pagination_class = LargeResultsSetPagination
+
 
 class GalleryView(generics.ListAPIView):
     """ВЫВОД СПИСКА ПЕРСОН"""
@@ -74,30 +82,8 @@ class GalleryView(generics.ListAPIView):
     pagination_class = LargeResultsSetPagination
 
 
-class EventListView(ListAPIView):
-    """вывод список новостей"""
-    queryset = Event.objects.filter(draft=False)
-    serializer_class = EventListSerializer
+class FilesListView(generics.ListAPIView):
+    """ВЫВОД СПИСКА ПЕРСОН"""
+    queryset = Files.objects.all()
+    serializer_class = FileListSerializer
     pagination_class = LargeResultsSetPagination
-
-class EventCreateView(LoginRequiredMixin, generics.CreateAPIView):
-    """ДОБАВЛЕНИЕ МЕРОПРИЯТИЙ"""
-    serializer_class = EventCreateSerializer
-    permission_classes = [permissions.IsAdminUser]
-
-class EventDetailView(APIView):
-
-    def get(self, request, pk):
-        event = Event.objects.get(id=pk, draft=False)
-        serializer = EventDetailSerializer(event)
-        news_shots = Gallery.objects.filter(event__id=pk)
-        ser_shots = GallerySerializer(news_shots, many=True)
-        return Response({'event': serializer.data, 'shots': ser_shots.data})
-
-    def post(self, request, pk):
-        event = Event.objects.get(id=pk, draft=False)
-        serializer = EventDetailSerializer(event)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)

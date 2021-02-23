@@ -1,15 +1,15 @@
 from django import forms
-from .models import News, Acreditation
+from .models import Post, Acreditation
 
 
-class NewsForm(forms.ModelForm):
+class PostForm(forms.ModelForm):
     """ФОРМА НОВОСТЕЙ"""
     class Meta:
-        model = News
-        exclude = 'url', 'draft'
+        model = Post
+        exclude = 'draft',
 
 class AcreditationForm(forms.ModelForm):
     """ФОРМА НОВОСТЕЙ"""
     class Meta:
         model = Acreditation
-        exclude = '__all__'
+        exclude = 'draft',

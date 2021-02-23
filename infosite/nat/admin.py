@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import News, Event, Acreditation, Personal, Gallery
+from .models import Post, Acreditation, Personal, Gallery, Category, Files
 
 # Admin site display settings
 class AuthorAdmin(admin.ModelAdmin):
@@ -12,33 +12,48 @@ admin.site.site_header = "Nat uz"
 
 class GalleryInLine(admin.TabularInline):
     model = Gallery
-    extra = 5
+    extra = 1
 
     fields = (('image', "display_screenshots"),)
     readonly_fields = ("display_screenshots",)
+
+    def display_screenshots(self, obj):
+        return mark_safe(f"<img src={obj.image.url} height='400'")
+
+    display_screenshots.short_description = 'Скриншот'
 
 class PersonalInLine(admin.TabularInline):
     model = Personal
-    extra = 3
+    extra = 1
 
-    fields = (('image', "display_screenshots"),)
-    readonly_fields = ("display_screenshots",)
+    fields = (('title', 'image', "display_persons"),)
+    readonly_fields = ("display_persons",)
 
-@admin.register(News)
-class NewsAdmin(admin.ModelAdmin):
-    list_display = ("title", "date", "id", 'draft')
+    def display_persons(self, obj):
+        return mark_safe(f"<img src={obj.image.url} height='400'")
+
+    display_persons.short_description = 'Скриншот'
+
+class FilesInLine(admin.TabularInline):
+    model = Files
+    extra = 1
+
+    fields = ('name', 'file',)
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ("title", "date", "id", 'draft', 'category')
     list_display_links = 'title',
-    list_filter = ("date", "year")
+    list_filter = ("date",)
     save_on_top = True
     list_editable = 'draft',
     save_as = True
     fieldsets = [
-        (None, {'fields': ['title', 'description', 'date', 'url']}),
-        ('Постер', {'fields': [('image', 'display_image')]}),
+        (None, {'fields': ['title', 'description', 'date', 'category', 'url']}),
+        ('Image', {'fields': [('image', 'display_image')]}),
     ]
-
-    readonly_fields = ("display_poster",)
-    inlines = [GalleryInLine, PersonalInLine]
+    readonly_fields = ("display_image",)
+    inlines = [FilesInLine , GalleryInLine, PersonalInLine]
 
     def display_image(self, obj):
         return mark_safe(f"<img src={obj.image.url} height='400'")
@@ -48,33 +63,26 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(Personal)
 class PersonalAdmin(admin.ModelAdmin):
-    list_display = 'name', 'image'
+    list_display = 'title', 'id',
 
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    list_display = ("title", "date", "id", 'draft')
-    list_display_links = 'title',
-    list_filter = ("date", "year")
-    save_on_top = True
-    list_editable = 'draft',
-    save_as = True
-    fieldsets = [
-        (None, {'fields': ['title', 'description', 'date', 'url']}),
-        ('Постер', {'fields': [('image', 'display_image')]}),
-    ]
+@admin.register(Files)
+class PersonalAdmin(admin.ModelAdmin):
+    list_display = 'name', 'id',
 
-    readonly_fields = ("display_image",)
-    inlines = [GalleryInLine, PersonalInLine]
+@admin.register(Gallery)
+class GalleryAdmin(admin.ModelAdmin):
+    list_display = 'name', 'id',
 
-    def display_image(self, obj):
-        return mark_safe(f"<img src={obj.image.url} height='400'")
-
-    display_image.short_description = 'Картинки'
 
 @admin.register(Acreditation)
 class AcreditationAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "date", "email", )
     readonly_fields = ("email", "date", "name")
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = 'name', 'id',
 
 
 
