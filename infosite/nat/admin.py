@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Post, Acreditation, Personal, Gallery, Category, Files, Contact
+from .models import Post, Acreditation, Personal, Gallery, Category, Files, Contact, Text
 
 # Admin site display settings
 class AuthorAdmin(admin.ModelAdmin):
@@ -26,7 +26,7 @@ class PersonalInLine(admin.TabularInline):
     model = Personal
     extra = 1
 
-    fields = (('title', 'image', "display_persons"),)
+    fields = (('perscat', 'title', 'image', "display_persons"),)
     readonly_fields = ("display_persons",)
 
     def display_persons(self, obj):
@@ -38,7 +38,13 @@ class FilesInLine(admin.TabularInline):
     model = Files
     extra = 1
 
-    fields = ('name', 'file',)
+    fields = ('title', 'description', 'file')
+
+class TextInLinedmin(admin.TabularInline):
+    model = Text
+    extra = 1
+
+    fields = ('title', 'description',)
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -53,7 +59,7 @@ class PostAdmin(admin.ModelAdmin):
         ('Image', {'fields': [('image', 'display_image')]}),
     ]
     readonly_fields = ("display_image",)
-    inlines = [FilesInLine , GalleryInLine, PersonalInLine]
+    inlines = [TextInLinedmin, FilesInLine, GalleryInLine, PersonalInLine]
 
     def display_image(self, obj):
         return mark_safe(f"<img src={obj.image.url} height='400'")
@@ -63,19 +69,23 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Personal)
 class PersonalAdmin(admin.ModelAdmin):
-    list_display = 'title', 'id',
+    list_display = 'title', 'id', 'perscat',
     list_display_links = 'title',
 
 @admin.register(Files)
 class FileslAdmin(admin.ModelAdmin):
-    list_display = 'name', 'id',
-    list_display_links = 'name',
+    list_display = 'title', 'id',
+    list_display_links = 'title',
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
     list_display_links = 'name',
 
+@admin.register(Text)
+class TextAdmin(admin.ModelAdmin):
+    list_display = 'title', 'id',
+    list_display_links = 'title',
 
 @admin.register(Acreditation)
 class AcreditationAdmin(admin.ModelAdmin):

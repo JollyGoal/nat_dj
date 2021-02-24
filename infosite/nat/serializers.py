@@ -1,4 +1,4 @@
-from .models import Acreditation, Post, Gallery, Personal, Files, Contact
+from .models import Acreditation, Post, Gallery, Personal, Files, Contact, Text
 from rest_framework import serializers
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -6,7 +6,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = 'title', 'date', 'category', 'url' , 'id'
+        fields = 'title', 'date', 'category', 'url', 'id'
 
 class PostDetailSerializer(serializers.ModelSerializer):
     """ПОДРОБНОСТИ НОВОСТЕЙ"""
@@ -60,6 +60,12 @@ class PersonalListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Personal
+        fields = '__all__'
+
+class TextSerializer(serializers.ModelSerializer):
+    """СЕРИАЛИЗАТОР КОММЕНТАРИЕВ"""
+    class Meta:
+        model = Text
         fields = '__all__'
 
 
