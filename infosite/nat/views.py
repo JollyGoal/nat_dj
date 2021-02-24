@@ -8,6 +8,7 @@ from .serializers import (
     AcreditationCreateSerializer,
     FileListSerializer,
     PostDetailSerializer,
+    ContactCreateSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,6 +20,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class AcreditationView(LoginRequiredMixin, generics.CreateAPIView):
     """АККРЕДИТАЦИЯ СМИ"""
     serializer_class = AcreditationCreateSerializer
+
+class ContactView(LoginRequiredMixin, generics.CreateAPIView):
+    """КОНТАКТ С НАМИ"""
+    serializer_class = ContactCreateSerializer
 
 
 class LargeResultsSetPagination(PageNumberPagination):

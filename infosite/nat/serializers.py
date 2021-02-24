@@ -1,4 +1,4 @@
-from .models import Acreditation, Post, Gallery, Personal, Files
+from .models import Acreditation, Post, Gallery, Personal, Files, Contact
 from rest_framework import serializers
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -36,6 +36,13 @@ class AcreditationCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Acreditation
+        fields = ("__all__")
+
+class ContactCreateSerializer(serializers.ModelSerializer):
+    """АККРЕДИТАЦИЯ"""
+
+    class Meta:
+        model = Contact
         fields = ("__all__")
 
 
