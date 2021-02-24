@@ -6,7 +6,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = 'title', 'date', 'category'
+        fields = 'title', 'date', 'category', 'url' , 'id'
 
 class PostDetailSerializer(serializers.ModelSerializer):
     """ПОДРОБНОСТИ НОВОСТЕЙ"""

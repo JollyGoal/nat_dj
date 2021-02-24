@@ -64,25 +64,31 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Personal)
 class PersonalAdmin(admin.ModelAdmin):
     list_display = 'title', 'id',
+    list_display_links = 'title',
 
 @admin.register(Files)
-class PersonalAdmin(admin.ModelAdmin):
+class FileslAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
+    list_display_links = 'name',
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
+    list_display_links = 'name',
 
 
 @admin.register(Acreditation)
 class AcreditationAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "date", "email", )
-    readonly_fields = ("email", "date", "name")
+    readonly_fields = ("email", "date", "name", "files", "format", "phone", "info", "list", "title")
+    list_display_links = 'name',
+    list_filter = ("date",)
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
+    list_display_links = 'name',
 
 
 

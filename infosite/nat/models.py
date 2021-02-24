@@ -82,7 +82,7 @@ class Personal(models.Model):
         verbose_name_plural = "Персонал"
 
 class Acreditation(models.Model):
-    title = models.CharField("Аккредитация", max_length=150)
+    title = models.CharField("Название СМИ", max_length=150)
     format = models.CharField("Формат выхода материала", max_length=150)
     name = models.CharField("Ф.И.О.", max_length=150)
     date = models.DateTimeField("Дата выхода материала")
