@@ -1,5 +1,12 @@
-from .models import Acreditation, Post, Gallery, Personal, Files, Contact, Text
+from .models import Acreditation, Post, Gallery, Personal, Files, Contact, Text, Sponsor, Category
 from rest_framework import serializers
+
+class CategoryListSerializer(serializers.ModelSerializer):
+    """СПИСОК НОВОСТЕЙ"""
+
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 class PostListSerializer(serializers.ModelSerializer):
     """СПИСОК НОВОСТЕЙ"""
@@ -7,6 +14,13 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = 'title', 'date', 'category', 'url', 'id'
+
+class SponsorSerializer(serializers.ModelSerializer):
+    """СПИСОК НОВОСТЕЙ"""
+
+    class Meta:
+        model = Sponsor
+        fields = '__all__'
 
 class PostDetailSerializer(serializers.ModelSerializer):
     """ПОДРОБНОСТИ НОВОСТЕЙ"""
@@ -52,7 +66,7 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = 'image',
+        fields = 'id', 'name', 'image',
 
 
 class PersonalListSerializer(serializers.ModelSerializer):
