@@ -1,2 +1,5 @@
 .idea
 venv
+media
+db.sqlite3
+static

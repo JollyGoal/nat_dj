@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView
-from .models import Gallery, Personal, Post, Acreditation, Files, Text
+from .models import Gallery, Personal, Post, Sponsor, Files, Text, Category
 from .serializers import (
     PostListSerializer,
     GallerySerializer,
@@ -10,6 +10,8 @@ from .serializers import (
     PostDetailSerializer,
     ContactCreateSerializer,
     TextSerializer,
+    SponsorSerializer,
+    CategoryListSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -41,6 +43,13 @@ class PostListView(ListAPIView):
     search_fields = ['title', 'description', 'category__name']
 
 
+class CategoryListView(ListAPIView):
+    """вывод список категорий"""
+    queryset = Category.objects.all()
+    serializer_class = CategoryListSerializer
+    pagination_class = LargeResultsSetPagination
+
+
 class PostDetailView(APIView):
 
     def get(self, request, pk):
@@ -48,6 +57,8 @@ class PostDetailView(APIView):
         serializer = PostDetailSerializer(post)
         file = Files.objects.filter(documents__id=pk)
         files = FileListSerializer(file, many=True)
+        sponsor = Sponsor.objects.filter(logo__id=pk)
+        sponsors = SponsorSerializer(sponsor, many=True)
         text = Text.objects.filter(add__id=pk)
         texts = TextSerializer(text, many=True)
         post_shots = Gallery.objects.filter(gallery__id=pk)
@@ -56,7 +67,8 @@ class PostDetailView(APIView):
         sen_shots = PersonalListSerializer(pers_shots, many=True)
         return Response({'post': serializer.data, 'gallery': ser_shots.data,
                          'personal': sen_shots.data, 'texts': texts.data,
-                         'files': files.data})
+                         'files': files.data,
+                         'sponsors': sponsors.data})
 
     def post(self, request, pk):
         news = Post.objects.get(id=pk, draft=False)
@@ -70,7 +82,7 @@ class PostDetailView(APIView):
 class PostCreateView(LoginRequiredMixin, generics.CreateAPIView):
     """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
     serializer_class = CreatePostSerializer
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
 
 class PersonsListView(generics.ListAPIView):

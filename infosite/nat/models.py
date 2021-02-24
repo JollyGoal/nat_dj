@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Category(models.Model):
     name = models.CharField("Категории", max_length=100)
     url = models.SlugField(max_length=160, unique=True)
@@ -18,7 +17,8 @@ class Post(models.Model):
     """НОВОСТИ И МЕРОПРИЯТИЯ"""
     title = models.CharField("Оглавление", max_length=150)
     description = models.TextField("Описание")
-    image = models.ImageField("Главная Картинка", upload_to="images/")
+    poster = models.ImageField("Главная Картинка", upload_to="images/", blank=True, null=True,
+                               help_text="Для новостей Главная картинка объязательна!")
     date = models.DateTimeField("Дата")
     category = models.ForeignKey(Category, verbose_name="Категория",
                                  on_delete=models.SET_NULL, null=True)
@@ -29,19 +29,14 @@ class Post(models.Model):
     def __str__(self):
         return str(self.title)
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     self.url = slugify(self.category, allow_unicode=True) + '-' + str(self.id)
-    #     super().save(update_fields=['url'])
-
     class Meta:
         verbose_name = "Новости и Мероприятия"
         verbose_name_plural = "Новости и Мероприятия"
 
 class Files(models.Model):
-    title = models.CharField("Оглавление", max_length=150)
+    title = models.CharField("Оглавление", max_length=150, blank=True, null=True)
     description = models.TextField("Описание файла", blank=True, null=True)
-    file = models.FileField("Документы (PDF, WORD...)", upload_to="files/")
+    file = models.FileField("Документы (PDF, WORD...)", upload_to="files/", blank=True, null=True)
     documents = models.ForeignKey(Post, verbose_name="Документы к",
                                  on_delete=models.CASCADE, blank=True, null=True)
 
@@ -52,17 +47,7 @@ class Files(models.Model):
         verbose_name = "Файл"
         verbose_name_plural = "Файлы"
 
-class Gallery(models.Model):
-    name = models.CharField("Название", max_length=100)
-    image = models.ImageField("Фото Галлерея", upload_to="gallery/")
-    gallery = models.ForeignKey(Post, verbose_name="Новости и Мероприятия",
-                              on_delete=models.CASCADE, blank=True, null=True)
-    def __str__(self):
-        return str(self.name)
 
-    class Meta:
-        verbose_name = "Галлерея"
-        verbose_name_plural = "Галлерея"
 
 class Text(models.Model):
     title = models.CharField("Оглавление", max_length=150)
@@ -94,6 +79,28 @@ class Personal(models.Model):
     class Meta:
         verbose_name = "Персонал"
         verbose_name_plural = "Персонал"
+
+class Sponsor(models.Model):
+    """СПОНСОРЫ"""
+    title = models.CharField("Название организации", max_length=150, blank=True, null=True)
+    images = models.ImageField("Логотип", upload_to="sponsors/")
+    url = models.CharField("Ссылка организаии", max_length=160)
+    logo = models.ForeignKey(Post, verbose_name="Организации",
+                                 on_delete=models.CASCADE, blank=True, null=True)
+
+    # def __str__(self):
+    #     return str(self.title)
+
+    class Meta:
+        verbose_name = "Спонсор"
+        verbose_name_plural = "Спонсоры"
+
+class Image(models.Model):
+    image = models.ImageField("Логотип", upload_to="images/")
+    sponsor = models.ForeignKey(Sponsor, verbose_name="Логотипы Организации",
+                                 on_delete=models.CASCADE, blank=True, null=True)
+    post = models.ForeignKey(Post, verbose_name="Главные картинки",
+                                 on_delete=models.CASCADE, blank=True, null=True)
 
 class Acreditation(models.Model):
 
@@ -131,4 +138,20 @@ class Contact(models.Model):
     class Meta:
         verbose_name = "Связь с нами"
         verbose_name_plural = "Связь с нами"
+
+
+class Gallery(models.Model):
+    name = models.CharField("Название", max_length=100, blank=True, null=True)
+    image = models.ImageField("Фото Галлерея", upload_to="gallery/")
+    gallery = models.ForeignKey(Post, verbose_name="Галлерея",
+                                on_delete=models.CASCADE, blank=True, null=True)
+    # sponsor = models.ForeignKey(Sponsor, verbose_name="Спонсоры",
+    #                             on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = "Галлерея"
+        verbose_name_plural = "Галлерея"
 
