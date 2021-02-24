@@ -1,4 +1,4 @@
-from .models import Acreditation, Post, Gallery, Personal, Files, Contact, Text, Sponsor, Category
+from .models import Acreditation, Post, Gallery, Personal, Files, Contact, Text, Sponsor, Category, Image
 from rest_framework import serializers
 
 class CategoryListSerializer(serializers.ModelSerializer):
@@ -82,4 +82,9 @@ class TextSerializer(serializers.ModelSerializer):
         model = Text
         fields = '__all__'
 
+class ImageListSerializer(serializers.ModelSerializer):
+    """СЕРИАЛИЗАТОР КАРТИНОК"""
+    class Meta:
+        model = Image
+        fields = '__all__'
 
