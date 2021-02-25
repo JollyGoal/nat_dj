@@ -146,8 +146,6 @@ class Gallery(models.Model):
     image = models.ImageField("Фото Галлерея", upload_to="gallery/")
     gallery = models.ForeignKey(Post, verbose_name="Галлерея",
                                 on_delete=models.CASCADE, blank=True, null=True)
-    # sponsor = models.ForeignKey(Sponsor, verbose_name="Спонсоры",
-    #                             on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return str(self.name)
