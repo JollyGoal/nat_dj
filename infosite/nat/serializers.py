@@ -36,15 +36,6 @@ class FileListSerializer(serializers.ModelSerializer):
         model = Files
         fields = '__all__'
 
-
-class CreatePostSerializer(serializers.ModelSerializer):
-    """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
-
-    class Meta:
-        model = Post
-        exclude = 'draft',
-
-
 class AcreditationCreateSerializer(serializers.ModelSerializer):
     """АККРЕДИТАЦИЯ"""
 

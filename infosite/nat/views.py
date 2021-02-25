@@ -3,7 +3,6 @@ from .models import Gallery, Personal, Post, Sponsor, Files, Text, Category, Ima
 from .serializers import (
     PostListSerializer,
     GallerySerializer,
-    CreatePostSerializer,
     PersonalListSerializer,
     AcreditationCreateSerializer,
     FileListSerializer,
@@ -49,6 +48,7 @@ class CategoryListView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryListSerializer
     pagination_class = LargeResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class PostDetailView(APIView):
@@ -83,17 +83,12 @@ class PostDetailView(APIView):
         return Response(serializer.errors)
 
 
-class PostCreateView(LoginRequiredMixin, generics.CreateAPIView):
-    """ДОБАВЛЕНИЕ НОВОСТЕЙ"""
-    serializer_class = CreatePostSerializer
-    # permission_classes = [permissions.IsAdminUser]
-
-
 class PersonsListView(generics.ListAPIView):
     """ВЫВОД СПИСКА ПЕРСОН"""
     queryset = Personal.objects.all()
     serializer_class = PersonalListSerializer
     pagination_class = LargeResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class GalleryView(generics.ListAPIView):
@@ -101,6 +96,7 @@ class GalleryView(generics.ListAPIView):
     queryset = Gallery.objects.all()
     serializer_class = GallerySerializer
     pagination_class = LargeResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class FilesListView(generics.ListAPIView):
@@ -108,9 +104,11 @@ class FilesListView(generics.ListAPIView):
     queryset = Files.objects.all()
     serializer_class = FileListSerializer
     pagination_class = LargeResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
 class SponsorView(generics.ListAPIView):
     """ВЫВОД СПИСКА СПОНСОРОВ"""
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
     pagination_class = LargeResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
