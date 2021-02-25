@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView
-from .models import Gallery, Personal, Post, Sponsor, Files, Text, Category
+from .models import Gallery, Personal, Post, Sponsor, Files, Text, Category, Image
 from .serializers import (
     PostListSerializer,
     GallerySerializer,
@@ -11,7 +11,8 @@ from .serializers import (
     ContactCreateSerializer,
     TextSerializer,
     SponsorSerializer,
-    CategoryListSerializer
+    CategoryListSerializer,
+    ImageListSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -65,10 +66,13 @@ class PostDetailView(APIView):
         ser_shots = GallerySerializer(post_shots, many=True)
         pers_shots = Personal.objects.filter(personal__id=pk)
         sen_shots = PersonalListSerializer(pers_shots, many=True)
+        image = Image.objects.filter(post__id=pk)
+        images = ImageListSerializer(image, many=True)
         return Response({'post': serializer.data, 'gallery': ser_shots.data,
                          'personal': sen_shots.data, 'texts': texts.data,
                          'files': files.data,
-                         'sponsors': sponsors.data})
+                         'sponsors': sponsors.data,
+                         'images': images.data})
 
     def post(self, request, pk):
         news = Post.objects.get(id=pk, draft=False)
@@ -105,8 +109,8 @@ class FilesListView(generics.ListAPIView):
     serializer_class = FileListSerializer
     pagination_class = LargeResultsSetPagination
 
-# class TextView(generics.ListAPIView):
-#     """ВЫВОД СПИСКА ТЕМ"""
-#     queryset = Text.objects.all()
-#     serializer_class = TextSerializer
-#     pagination_class = LargeResultsSetPagination
+class SponsorView(generics.ListAPIView):
+    """ВЫВОД СПИСКА СПОНСОРОВ"""
+    queryset = Sponsor.objects.all()
+    serializer_class = SponsorSerializer
+    pagination_class = LargeResultsSetPagination

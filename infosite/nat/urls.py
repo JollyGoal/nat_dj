@@ -11,4 +11,5 @@ urlpatterns = [
     path("gallery/", views.GalleryView.as_view()),
     path("files/", views.FilesListView.as_view()),
     path("contact/", views.ContactView.as_view()),
+    path("sponsor/", views.SponsorView.as_view()),
 ]

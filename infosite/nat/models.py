@@ -65,7 +65,8 @@ class Text(models.Model):
 
 class Personal(models.Model):
     """ПЕРСОНАЛ"""
-    title = models.CharField("Краткая информация", max_length=500)
+    title = models.CharField("Фамилия Имя", max_length=100)
+    description = models.CharField("Краткая информация", max_length=200)
     image = models.ImageField("Изображение", upload_to="people/")
     personal = models.ForeignKey(Post, verbose_name="Персонал",
                                  on_delete=models.CASCADE, blank=True, null=True)

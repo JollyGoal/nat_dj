@@ -73,7 +73,7 @@ class PersonalInLine(admin.TabularInline):
     model = Personal
     extra = 1
 
-    fields = (('perscat', 'image', 'title', "display_persons"),)
+    fields = (( 'title', 'description', 'perscat', 'image', "display_persons"),)
     readonly_fields = ("display_persons",)
 
     def display_persons(self, obj):
@@ -133,11 +133,11 @@ class GalleryAdmin(admin.ModelAdmin):
     list_display = 'name', 'id',
     list_display_links = 'name',
 
-@admin.register(Text)
-class TextAdmin(admin.ModelAdmin):
-    list_display = 'title', 'id',
-    list_display_links = 'title',
-    form = TextAdminForm
+# @admin.register(Text)
+# class TextAdmin(admin.ModelAdmin):
+#     list_display = 'title', 'id',
+#     list_display_links = 'title',
+#     form = TextAdminForm
 
 @admin.register(Acreditation)
 class AcreditationAdmin(admin.ModelAdmin):
